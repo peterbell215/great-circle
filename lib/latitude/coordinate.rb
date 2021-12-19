@@ -1,21 +1,22 @@
-#!/bin/env ruby
-# encoding: utf-8
+# frozen_string_literal: true
 
+require 'active_support/core_ext'
+
+# Class to represents a location on the earth using latitude and longitude.
 class Coordinate
-  COORDINATE_CHARS = "0-9.\'\"°′″"
   attr_reader :latitude, :longitude
 
-  def initialize(params = {})
-    self.latitude  = params[:latitude]
-    self.longitude = params[:longitude]
+  def initialize(latitude:, longitude:)
+    @latitude = latitude
+    @longitude = longitude
   end
 
   def latitude=(val)
-    @latitude = convert_degree_input_to_decimal(val, ["N","S"], ["S"])
+    @latitude = convert_degree_input_to_decimal(val, %w[N S], 'S')
   end
 
   def longitude=(val)
-    @longitude = convert_degree_input_to_decimal(val, ["E","W"], ["W"])
+    @longitude = convert_degree_input_to_decimal(val, %w[E W], 'W')
   end
 
   def valid?
@@ -23,86 +24,42 @@ class Coordinate
   end
 
   def great_circle_distance_to(final_coordinate)
-    Vincenty.great_circle_distance(latitude, longitude,
-                                   final_coordinate.latitude,
-                                   final_coordinate.longitude)
+    Vincenty.great_circle_distance(latitude, longitude, final_coordinate.latitude, final_coordinate.longitude)
   end
 
   def initial_bearing_to(final_coordinate)
-    Vincenty.initial_bearing(latitude, longitude,
-                             final_coordinate.latitude,
-                             final_coordinate.longitude)
+    Vincenty.initial_bearing(latitude, longitude, final_coordinate.latitude, final_coordinate.longitude)
   end
 
   def final_bearing_from(start_coordinate)
-    Vincenty.final_bearing(start_coordinate.latitude,
-                           start_coordinate.longitude,
-                           latitude, longitude)
+    Vincenty.final_bearing(start_coordinate.latitude, start_coordinate.longitude, latitude, longitude)
   end
 
-private
-  def convert_degree_input_to_decimal(input, valid_directions, negative_directions)
-    return if input.nil? || (input.is_a?(String) && input.empty?)
-    input.strip! if input.is_a? String
+  private
 
-    return Float(input) if is_number?(input)
+  SIGN = /(?<sign>[+-]?)/
+  DEGREES = /(?<degrees>[0-9]{1,3})/
+  MINUTES_AND_SECONDS = /(°\s*((?<minutes>[0-5]?[0-9])')(\s*(?<seconds>[0-5]?[0-9])")?)/
+  DECIMAL = /((?<decimal>.[0-9]+)°?)/
 
-    raise ArgumentError unless input.gsub(valid_char_regexp(valid_directions), "").empty?
-    raise ArgumentError unless valid_end_char_regexp(valid_directions).match(input)
+  COORDINATE_REGEXP = /#{SIGN}#{DEGREES}(#{MINUTES_AND_SECONDS}|#{DECIMAL})?\s*(?<compass>[NSEW]?)/i
 
-    if valid_directions.map(&:upcase).include? input[-1].upcase
-      direction = input[-1].upcase
-      convert_to_negative = negative_directions.map(&:upcase).include? direction
-      input = input[0...-1].strip
-    else
-      convert_to_negative = false
-    end
+  def convert_degree_input_to_decimal(input, valid_directions, negative_direction)
+    return if input.blank?
 
-    return (convert_to_negative ? -1 : 1) * Float(input) if is_number?(input)
+    return input.to_f if input.kind_of?(Numeric)
 
-    degrees = minutes = seconds = 0
-    # first, get the degrees
-    if degree_location = input.index(/°/)
-      degree_input = input[0...degree_location].strip
-      input = input[degree_location+1..-1].strip
-      degrees = Float(degree_input)
-    end
+    match = COORDINATE_REGEXP.match(input)
 
-    if minute_location = input.index(/[′\']/)
-      minute_input = input[0...minute_location].strip
-      input = input[minute_location+1..-1].strip
-      minutes = Float(minute_input)
-    end
+    raise ArgumentError if match.nil? || match[:compass].present? && !match[:compass].in?(valid_directions)
 
-    if second_location = input.index(/[″\"]/)
-      second_input = input[0...second_location].strip
-      input = input[second_location+1..-1].strip
-      seconds = Float(second_input)
-    end
+    degrees = match[:degrees].to_f
 
-    decimal_input = degrees + minutes/60 + seconds/3600
+    degrees += match[:decimal].to_f if match[:decimal]
+    degrees += match[:minutes].to_f / 60.0 if match[:minutes]
+    degrees += match[:seconds].to_f / 3600.0 if match[:seconds]
 
-    return (convert_to_negative ? -1 : 1) * decimal_input
-  end
-
-  def is_number?(val)
-    begin
-      Float(val)
-      return true
-    rescue
-      return false
-    end
-  end
-
-  def basic_char_regexp
-    Regexp.new("[" + COORDINATE_CHARS + "]")
-  end
-
-  def valid_char_regexp(additional_chars = [])
-    Regexp.new("[" + COORDINATE_CHARS + additional_chars.join + ", ]")
-  end
-
-  def valid_end_char_regexp(additional_chars = [])
-    Regexp.new("[" + COORDINATE_CHARS + additional_chars.join + "$]")
+    degrees *= -1.0 if match[:sign] == '-' || match[:compass].casecmp?(negative_direction)
+    degrees
   end
 end
