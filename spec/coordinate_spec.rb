@@ -140,6 +140,51 @@ describe Coordinate do
     end
   end
 
+  describe 'Vincenty calculations' do
+    let(:coord_50_minus5) { Coordinate.new(latitude: 50, longitude: -5) }
+    let(:coord_58_minus3) { Coordinate.new(latitude: 58, longitude: -3) }
+    let(:coord_minus58_3) { Coordinate.new(latitude: -58, longitude: 3) }
+    let(:coord_10_10) { Coordinate.new(latitude: 10, longitude: 10) }
+    let(:coord_50_50) { Coordinate.new(latitude: 50, longitude: 50) }
+
+    shared_examples_for 'Vincenty calculations' do |method, value1, value2, value3|
+      specify { expect(coord_50_minus5.send(method, coord_58_minus3)).to be_within(0.001).of(value1) }
+      specify { expect(coord_50_minus5.send(method, coord_minus58_3)).to be_within(0.001).of(value2) }
+      specify { expect(coord_10_10.send(method, coord_50_50)).to be_within(0.001).of(value3) }
+    end
+
+    describe '#distance_to' do
+      it 'returns 0 if both coordinates are equal' do
+        expect(coord_50_minus5.distance_to(coord_50_minus5)).to be_zero
+      end
+
+      it_behaves_like 'Vincenty calculations', :distance_to, 899.937706, 11_994.498924, 5758.331041
+    end
+
+    describe '#intial_bearing' do
+      it_behaves_like 'Vincenty calculations', :initial_bearing_to, 7.575056, 175.531128, 31.830619
+    end
+
+    describe '#final_bearing_from' do
+      it_behaves_like 'Vincenty calculations', :final_bearing_from, 9.197103, 174.579117, 53.758428
+    end
+
+    describe 'caching mechanism' do
+      before { allow(Vincenty).to receive(:solution_set).and_call_original }
+
+      it 'only does the Vincenty calculation once' do
+        expect(coord_50_minus5.distance_to(coord_58_minus3)).to be_within(0.001).of(899.937706)
+        expect(coord_50_minus5.initial_bearing_to(coord_58_minus3)).to be_within(0.001).of(7.575056)
+        expect(coord_50_minus5.final_bearing_from(coord_58_minus3)).to be_within(0.001).of(9.197103)
+
+        expect(Vincenty).to have_received(:solution_set).once
+      end
+    end
+
+  end
+
+=begin
+
   describe '#great_circle_distance_to' do
     let(:start_coordinate) { Coordinate.new(latitude: 10, longitude: 20) }
     let(:end_coordinate) { Coordinate.new(latitude: 30, longitude: 40) }
@@ -178,4 +223,5 @@ describe Coordinate do
       expect(Vincenty).to have_received(:final_bearing).with(10, 20, 30, 40)
     end
   end
+=end
 end

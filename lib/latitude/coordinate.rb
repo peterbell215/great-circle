@@ -7,8 +7,10 @@ class Coordinate
   attr_reader :latitude, :longitude
 
   def initialize(latitude:, longitude:)
-    @latitude = latitude
-    @longitude = longitude
+    @latitude = latitude.to_f
+    @longitude = longitude.to_f
+
+    @vincenty_solutions = {}
   end
 
   def latitude=(val)
@@ -23,19 +25,24 @@ class Coordinate
     latitude && longitude && (latitude.abs <= 90) && (longitude.abs <= 180)
   end
 
-  def great_circle_distance_to(final_coordinate)
-    Vincenty.great_circle_distance(latitude, longitude, final_coordinate.latitude, final_coordinate.longitude)
+  def distance_to(final_coordinate)
+    find_or_calc_vincenty_solution(final_coordinate).distance
   end
 
   def initial_bearing_to(final_coordinate)
-    Vincenty.initial_bearing(latitude, longitude, final_coordinate.latitude, final_coordinate.longitude)
+    find_or_calc_vincenty_solution(final_coordinate).initial_bearing
   end
 
   def final_bearing_from(start_coordinate)
-    Vincenty.final_bearing(start_coordinate.latitude, start_coordinate.longitude, latitude, longitude)
+    find_or_calc_vincenty_solution(start_coordinate).final_bearing
   end
 
   private
+
+  def find_or_calc_vincenty_solution(final_coordinate)
+    @vincenty_solutions[final_coordinate] ||=
+      Vincenty.solution_set(latitude, longitude, final_coordinate.latitude, final_coordinate.longitude)
+  end
 
   SIGN = /(?<sign>[+-]?)/
   DEGREES = /(?<degrees>[0-9]{1,3})/
