@@ -154,20 +154,28 @@ describe Coordinate do
   end
 
   describe '#initial_bearing_to' do
+    let(:start_coordinate) { Coordinate.new(latitude: 10, longitude: 20) }
+    let(:end_coordinate) { Coordinate.new(latitude: 30, longitude: 40) }
+
+    before { allow(Vincenty).to receive(:initial_bearing) }
+
     it 'calls the vincenty formulae to calculate the initial bearing' do
-      expect(Vincenty).to receive(:initial_bearing).with(10, 20, 30, 40)
-      start_coordinate = Coordinate.new(latitude: 10, longitude: 20)
-      end_coordinate = Coordinate.new(latitude: 30, longitude: 40)
       start_coordinate.initial_bearing_to(end_coordinate)
+
+      expect(Vincenty).to have_received(:initial_bearing).with(10, 20, 30, 40)
     end
   end
 
   describe '#final_bearing_from' do
+    let(:start_coordinate) { Coordinate.new(latitude: 10, longitude: 20) }
+    let(:end_coordinate) { Coordinate.new(latitude: 30, longitude: 40) }
+
+    before { allow(Vincenty).to receive(:final_bearing) }
+
     it 'calls the vincenty formulae to calculate the final bearing' do
-      expect(Vincenty).to receive(:final_bearing).with(10, 20, 30, 40)
-      start_coordinate = Coordinate.new(latitude: 10, longitude: 20)
-      end_coordinate = Coordinate.new(latitude: 30, longitude: 40)
       end_coordinate.final_bearing_from(start_coordinate)
+
+      expect(Vincenty).to have_received(:final_bearing).with(10, 20, 30, 40)
     end
   end
 end
