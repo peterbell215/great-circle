@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
+require_relative 'lat_long_calcs'
+
 # Implements great circle calculations.  Thanks to http://www.movable-type.co.uk/scripts/latlong-vincenty.html
 module Vincenty
   extend self
 
-  VincentySolution = Struct.new(:initial_bearing, :final_bearing, :distance, keyword_init:true)
+  include LatLongCalcs
 
   # in meters
   WGS84_A = 6_378_137.0
   WGS84_B = 6_356_752.314245
-  WGS84_F = 1 / 298.257223563
 
   def solution_set(start_lat, start_long, end_lat, end_long)
     phi1 = to_radians(start_lat)

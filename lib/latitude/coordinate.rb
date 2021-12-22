@@ -4,11 +4,14 @@ require 'active_support/core_ext'
 
 # Class to represents a location on the earth using latitude and longitude.
 class Coordinate
+  include LatLongCalcs
+  include Math
+
   attr_reader :latitude, :longitude
 
   def initialize(latitude:, longitude:)
-    @latitude = latitude.to_f
-    @longitude = longitude.to_f
+    self.latitude = latitude
+    self.longitude = longitude
 
     @vincenty_solutions = {}
   end
@@ -29,13 +32,34 @@ class Coordinate
     find_or_calc_vincenty_solution(final_coordinate).distance
   end
 
-  def initial_bearing_to(final_coordinate)
+  def initial_heading_to(final_coordinate)
     find_or_calc_vincenty_solution(final_coordinate).initial_bearing
   end
 
-  def final_bearing_from(start_coordinate)
+  def final_heading_from(start_coordinate)
     find_or_calc_vincenty_solution(start_coordinate).final_bearing
   end
+
+  # Given a heading and bearing from the current position, returns a new position on a great circle based on
+  # the initial heading.
+  # rubocop: disable Metrics/AbcSize PB: no easy way to simplify this method given complex maths involved
+  def new_position(heading:, distance:)
+    delta_sin, delta_cos = get_trig_trio(distance.to_f / EARTHS_RADIUS)
+    heading = to_radians(heading)
+    bearing_sin = sin(heading)
+
+    latitude_in_radians = to_radians(self.latitude)
+    latitude_sin, latitude_cos = get_trig_trio(latitude_in_radians)
+
+    longitude_in_radians = to_radians(self.longitude)
+
+    new_latitude = asin(latitude_sin * delta_cos + latitude_cos * delta_sin * cos(heading))
+    new_longitude = longitude_in_radians + atan2(bearing_sin * delta_sin * latitude_cos,
+                                                 delta_cos - latitude_sin * sin(new_latitude))
+
+    Coordinate.new(latitude: to_degrees(new_latitude), longitude: to_degrees(new_longitude))
+  end
+  # rubocop: enable Metrics/AbcSize
 
   private
 
@@ -44,13 +68,20 @@ class Coordinate
       Vincenty.solution_set(latitude, longitude, final_coordinate.latitude, final_coordinate.longitude)
   end
 
+  # rubocop: disable Lint/MixedRegexpCaptureTypes PB: the named capture groups are really useful.  The unnamed ones
+  #                                               are used purely to structure the Regexp and not used for extracting
+  #                                               info.  Could tag them accordingly but it makes the Regexp even less
+  #                                               readable.
   SIGN = /(?<sign>[+-]?)/
   DEGREES = /(?<degrees>[0-9]{1,3})/
   MINUTES_AND_SECONDS = /(°\s*((?<minutes>[0-5]?[0-9])')(\s*(?<seconds>[0-5]?[0-9])")?)/
   DECIMAL = /((?<decimal>.[0-9]+)°?)/
 
   COORDINATE_REGEXP = /#{SIGN}#{DEGREES}(#{MINUTES_AND_SECONDS}|#{DECIMAL})?\s*(?<compass>[NSEW]?)/i
+  # rubocop: enable Lint/MixedRegexpCaptureTypes
 
+  # rubocop: disable Metrics/CyclomaticComplexity Complex maths.  Difficult to simplify in a meaningful way
+  # rubocop: disable Metrics/AbcSize
   def convert_degree_input_to_decimal(input, valid_directions, negative_direction)
     return if input.blank?
 
@@ -69,4 +100,6 @@ class Coordinate
     degrees *= -1.0 if match[:sign] == '-' || match[:compass].casecmp?(negative_direction)
     degrees
   end
+  # rubocop: enable Metrics/CyclomaticComplexity
+  # rubocop: enable Metrics/AbcSize
 end
