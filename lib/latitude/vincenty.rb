@@ -8,6 +8,8 @@ module Vincenty
 
   include LatLongCalcs
 
+  VincentySolution = Struct.new(:initial_bearing, :final_bearing, :distance, keyword_init: true)
+
   # in meters
   WGS84_A = 6_378_137.0
   WGS84_B = 6_356_752.314245
@@ -23,10 +25,12 @@ module Vincenty
 
   private
 
-  def iterative_solver(phi_1, lambda_1, phi_2, lambda_2)
-    delta_lambda = lambda_2 - lambda_1      # difference in longitude on an auxiliary sphere
-    sin_u1, cos_u1 = get_trig_trio(phi_1)
-    sin_u2, cos_u2 = get_trig_trio(phi_2)
+  # rubocop: disable Metrics/MethodLength
+  # rubocop: disable Metrics/AbcSize
+  def iterative_solver(phi1, lambda1, phi2, lambda2)
+    delta_lambda = lambda2 - lambda1 # difference in longitude on an auxiliary sphere
+    sin_u1, cos_u1 = get_trig_trio(phi1)
+    sin_u2, cos_u2 = get_trig_trio(phi2)
 
     lam = delta_lambda
 
@@ -51,22 +55,22 @@ module Vincenty
 
       cos_2sigma_m = cos_sq_alpha.zero? ? 0.0 : cos_sigma - 2.0 * sin_u1 * sin_u2 / cos_sq_alpha
 
-      c = WGS84_F/16 * cos_sq_alpha * (4 + WGS84_F*(4 - 3*cos_sq_alpha))
+      c = WGS84_F / 16.0 * cos_sq_alpha * (4.0 + WGS84_F * (4.0 - 3.0 * cos_sq_alpha))
       lam_prime = lam
       lam = delta_lambda + (1 - c) * WGS84_F * sin_alpha *
-              (sigma + c * sin_sigma * (cos_2sigma_m + c * cos_sigma * (-1 + 2 * cos_2sigma_m**2)))
+                           (sigma + c * sin_sigma * (cos_2sigma_m + c * cos_sigma * (-1 + 2 * cos_2sigma_m**2)))
 
       # Check if we need to iterate the solution as not yet close enough. Otherwise drop through to what is really
       # the loops exit condition.
       next if (lam - lam_prime).abs > 1e-12
 
       u_sq = cos_sq_alpha * (WGS84_A**2 - WGS84_B**2) / (WGS84_B**2)
-      big_a = 1 + u_sq/16_384 * (4096 + u_sq * (-768 + u_sq * (320 - 175 * u_sq)))
-      big_b = u_sq/1024 * (256 + u_sq * (-128 + u_sq * (74-47 * u_sq)))
-      delta_sigma = big_b * sin_sigma * (cos_2sigma_m + big_b/4 * (cos_sigma * (-1 + 2*(cos_2sigma_m**2)) -
-        big_b/6 * cos_2sigma_m * (-3 + 4*(sin_sigma**2)) * (-3 + 4*(cos_sigma**2))))
+      big_a = 1.0 + u_sq / 16_384 * (4096.0 + u_sq * (-768.0 + u_sq * (320.0 - 175.0 * u_sq)))
+      big_b = (u_sq.to_f / 1024.0) * (256.0 + u_sq * (-128.0 + u_sq * (74.0 - 47.0 * u_sq)))
+      delta_sigma = big_b * sin_sigma * (cos_2sigma_m + big_b / 4 * (cos_sigma * (-1.0 + 2.0 * (cos_2sigma_m**2.0)) -
+        big_b / 6.0 * cos_2sigma_m * (-3.0 + 4.0 * (sin_sigma**2)) * (-3.0 + 4.0 * (cos_sigma**2))))
 
-      distance = (WGS84_B * big_a * (sigma - delta_sigma)).round(3)/1000.0 # 1mm precision expressed in km
+      distance = (WGS84_B * big_a * (sigma - delta_sigma)).round(3) / 1000.0 # 1mm precision expressed in km
       fwd_az = Math.atan2(cos_u2 * sin_lam, (cos_u1 * sin_u2) - (sin_u1 * cos_u2 * cos_lam))
       rev_az = Math.atan2(cos_u1 * sin_lam, (cos_u1 * sin_u2 * cos_lam) - (sin_u1 * cos_u2))
 
@@ -75,21 +79,8 @@ module Vincenty
 
     raise FailedToConvergeError
   end
-
-  def to_radians(degrees)
-    degrees * Math::PI / 180
-  end
-
-  def to_degrees(rads)
-    rads * 180 / Math::PI
-  end
-
-  def get_trig_trio(rads)
-    tan = (1-WGS84_F) * Math.tan(rads)
-    cos = 1 / Math.sqrt(1 + tan**2)
-    sin = tan * cos
-    [sin, cos, tan]
-  end
+  # rubocop: enable Metrics/MethodLength
+  # rubocop: enable Metrics/AbcSize
 end
 
 class FailedToConvergeError < StandardError; end
