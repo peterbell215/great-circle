@@ -6,6 +6,7 @@ describe Coordinate do
   let(:coordinate) { Coordinate.new(latitude: 0, longitude: 0) }
 
   # rubocop: disable RSpec/MultipleMemoizedHelpers
+  # rubocop: disable Naming/VariableNumber easier to understand which numbers are minus this way
   shared_context 'with common coordinates for testing' do
     let(:coord_50_minus5) { Coordinate.new(latitude: 50, longitude: -5) }
     let(:coord_58_minus3) { Coordinate.new(latitude: 58, longitude: -3) }
@@ -14,6 +15,7 @@ describe Coordinate do
     let(:coord_50_50) { Coordinate.new(latitude: 50, longitude: 50) }
   end
   # rubocop: enable RSpec/MultipleMemoizedHelpers
+  # rubocop: enable Naming/VariableNumber
 
   describe 'initialization' do
     it 'initializes object with provided parameters' do
@@ -118,6 +120,18 @@ describe Coordinate do
     end
   end
 
+  describe ':eql?' do
+    subject { Coordinate.new(latitude: 54.320, longitude: 3.03) }
+
+    let(:same_coordinate) { Coordinate.new(latitude: 54.320, longitude: 3.03) }
+    let(:different_latitude) { Coordinate.new(latitude: 54.0, longitude: 3.03) }
+    let(:different_longitude) { Coordinate.new(latitude: 54.320, longitude: 3.00) }
+
+    it { is_expected.to be_eql(same_coordinate) }
+    it { is_expected.not_to be_eql(different_latitude) }
+    it { is_expected.not_to be_eql(different_longitude) }
+  end
+
   describe 'validation' do
     it 'is valid if given valid lat and long' do
       expect(coordinate).to be_valid
@@ -207,6 +221,7 @@ describe Coordinate do
     describe 'caching mechanism' do
       before { allow(Vincenty).to receive(:solution_set).and_call_original }
 
+      # rubocop: disable RSpec/MultipleExpectations; want to test that call to solution_set is only made once.
       it 'only does the Vincenty calculation once' do
         expect(coord_50_minus5.distance_to(coord_58_minus3)).to be_within(0.001).of(899.937706)
         expect(coord_50_minus5.initial_heading_to(coord_58_minus3)).to be_within(0.001).of(7.575056)
@@ -214,6 +229,7 @@ describe Coordinate do
 
         expect(Vincenty).to have_received(:solution_set).once
       end
+      # rubocop: enable RSpec/MultipleExpectations
     end
   end
 end

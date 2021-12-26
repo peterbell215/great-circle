@@ -61,6 +61,12 @@ class Coordinate
   end
   # rubocop: enable Metrics/AbcSize
 
+  # Comparison operator for Coordinate
+  def eql?(other)
+    @latitude == other.latitude && @longitude == other.longitude
+  end
+  alias == eql?
+
   private
 
   def find_or_calc_vincenty_solution(final_coordinate)

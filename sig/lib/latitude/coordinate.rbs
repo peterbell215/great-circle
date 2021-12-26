@@ -12,6 +12,8 @@ class Coordinate
 
   def valid?: () -> bool
 
+  def eql?: (Coordinate other) -> bool
+
   def distance_to: (Coordinate final_coordinate) -> Float
 
   def initial_heading_to: (Coordinate final_coordinate) -> Float
