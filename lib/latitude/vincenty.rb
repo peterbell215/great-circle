@@ -11,8 +11,8 @@ module Vincenty
   VincentySolution = Struct.new(:initial_bearing, :final_bearing, :distance, keyword_init: true)
 
   # in meters
-  WGS84_A = 6_378_137.0
-  WGS84_B = 6_356_752.314245
+  WGS84_A = 3443.91846652
+  WGS84_B = 3432.371659935205
 
   def solution_set(start_lat, start_long, end_lat, end_long)
     phi1 = to_radians(start_lat)
@@ -67,10 +67,10 @@ module Vincenty
       u_sq = cos_sq_alpha * (WGS84_A**2 - WGS84_B**2) / (WGS84_B**2)
       big_a = 1.0 + u_sq / 16_384 * (4096.0 + u_sq * (-768.0 + u_sq * (320.0 - 175.0 * u_sq)))
       big_b = (u_sq.to_f / 1024.0) * (256.0 + u_sq * (-128.0 + u_sq * (74.0 - 47.0 * u_sq)))
-      delta_sigma = big_b * sin_sigma * (cos_2sigma_m + big_b / 4 * (cos_sigma * (-1.0 + 2.0 * (cos_2sigma_m**2.0)) -
+      delta_sigma = big_b * sin_sigma * (cos_2sigma_m + big_b / 4.0 * (cos_sigma * (-1.0 + 2.0 * (cos_2sigma_m**2.0)) -
         big_b / 6.0 * cos_2sigma_m * (-3.0 + 4.0 * (sin_sigma**2)) * (-3.0 + 4.0 * (cos_sigma**2))))
 
-      distance = (WGS84_B * big_a * (sigma - delta_sigma)).round(3) / 1000.0 # 1mm precision expressed in km
+      distance = (WGS84_B * big_a * (sigma - delta_sigma))
       fwd_az = Math.atan2(cos_u2 * sin_lam, (cos_u1 * sin_u2) - (sin_u1 * cos_u2 * cos_lam))
       rev_az = Math.atan2(cos_u1 * sin_lam, (cos_u1 * sin_u2 * cos_lam) - (sin_u1 * cos_u2))
 

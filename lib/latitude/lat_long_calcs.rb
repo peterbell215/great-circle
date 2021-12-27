@@ -4,7 +4,6 @@
 module LatLongCalcs
   module_function
 
-  EARTHS_RADIUS = 6_371
   WGS84_F = 1 / 298.257223563
 
   def to_radians(degrees)

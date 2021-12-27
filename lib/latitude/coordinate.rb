@@ -44,7 +44,7 @@ class Coordinate
   # the initial heading.
   # rubocop: disable Metrics/AbcSize PB: no easy way to simplify this method given complex maths involved
   def new_position(heading:, distance:)
-    delta_sin, delta_cos = get_trig_trio(distance.to_f / EARTHS_RADIUS)
+    delta_sin, delta_cos = get_trig_trio(distance.to_f / Vincenty::WGS84_A)
     heading = to_radians(heading)
     bearing_sin = sin(heading)
 
@@ -86,7 +86,7 @@ class Coordinate
   COORDINATE_REGEXP = /#{SIGN}#{DEGREES}(#{MINUTES_AND_SECONDS}|#{DECIMAL})?\s*(?<compass>[NSEW]?)/i
   # rubocop: enable Lint/MixedRegexpCaptureTypes
 
-  # rubocop: disable Metrics/CyclomaticComplexity Complex maths.  Difficult to simplify in a meaningful way
+  # rubocop: disable Metrics/CyclomaticComplexity Complex maths.  Difficult to simplify in a meaningful way.
   # rubocop: disable Metrics/AbcSize
   def convert_degree_input_to_decimal(input, valid_directions, negative_direction)
     return if input.blank?

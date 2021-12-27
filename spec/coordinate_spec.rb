@@ -207,7 +207,7 @@ describe Coordinate do
         expect(coord_50_minus5.distance_to(coord_50_minus5)).to be_zero
       end
 
-      it_behaves_like 'Vincenty calculations', :distance_to, 899.937706, 11_994.498924, 5758.331041
+      it_behaves_like 'Vincenty calculations', :distance_to, 485.927, 6_476.511, 3_109.25
     end
 
     describe '#intial_bearing' do
@@ -223,7 +223,7 @@ describe Coordinate do
 
       # rubocop: disable RSpec/MultipleExpectations; want to test that call to solution_set is only made once.
       it 'only does the Vincenty calculation once' do
-        expect(coord_50_minus5.distance_to(coord_58_minus3)).to be_within(0.001).of(899.937706)
+        expect(coord_50_minus5.distance_to(coord_58_minus3)).to be_within(0.001).of(485.927)
         expect(coord_50_minus5.initial_heading_to(coord_58_minus3)).to be_within(0.001).of(7.575056)
         expect(coord_50_minus5.final_heading_from(coord_58_minus3)).to be_within(0.001).of(9.197103)
 
