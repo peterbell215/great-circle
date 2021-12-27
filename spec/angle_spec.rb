@@ -19,6 +19,17 @@ describe Angle do
     end
   end
 
+  describe '#+' do
+    specify { expect(55.degrees + 5.degrees).to eq 60.degrees }
+  end
+
+  describe '#abs!' do
+    specify { expect(55.degrees.abs!).to eq 55.degrees }
+    specify { expect(365.degrees.abs!).to eq 5.degrees }
+    specify { expect(-55.degrees.abs!).to eq (360 - 55).degrees }
+    specify { expect(-365.degrees.abs!).to eq 355.degrees }
+  end
+
   describe 'Numeric to angle' do
     shared_examples_for 'converted angle' do |angle|
       specify { expect(angle).to eq(Angle.new(180.0) ) }
