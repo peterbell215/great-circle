@@ -2,16 +2,19 @@
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'latitude/version'
+require 'great-circle/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'latitude'
-  spec.version       = Latitude::VERSION
-  spec.authors       = ['Trey Springer', 'Peter Bell']
-  spec.email         = ['dfsiii@gmail.com']
-  spec.summary       = 'Calculates distances between two geographic coordinates.'
-  spec.description   = 'Uses the great-circle distance calculation to determine the distance between two locations with just latitudes and longitudes.'
-  spec.homepage      = 'https://github.com/umtrey/latitude-gem'
+  spec.name          = 'great-circle'
+  spec.version       = GreatCircle::VERSION
+  spec.authors       = ['Peter Bell']
+  spec.email         = ['peter.bell215@gmail.com']
+  spec.summary       = 'Provides a library to manipulate and calculate great circle headings, longitudes and latitudes.'
+  spec.description   = <<~DESCRIPTION
+    This originally started as a fork of the latitude-gem.  It provides a set of classes to manipulate great circle angles,
+    latitudes, longitudes, and distances.
+  DESCRIPTION
+  spec.homepage      = 'https://github.com/peterbell215/great-circle'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0")
