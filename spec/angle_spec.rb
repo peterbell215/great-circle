@@ -23,15 +23,6 @@ describe Angle do
       specify { expect(Angle.new('10')).to eq(10.0.degrees) }
       specify { expect(Angle.new('-10.5')).to eq(-10.5.degrees) }
       specify { expect(Angle.new('10.5')).to eq(10.5.degrees) }
-      specify { expect(Angle.new('10.5 N', latlong: :latitude)).to eq(10.5.degrees) }
-      specify { expect(Angle.new('10.5 S', latlong: :latitude)).to eq(-10.5.degrees) }
-      specify { expect(Angle.new('  10.5   N  ', latlong: :latitude)).to eq(10.5.degrees) }
-      specify { expect { Angle.new('10 E', latlong: :latitude) }.to raise_error(ArgumentError) }
-      specify { expect { Angle.new('10 W', latlong: :latitude) }.to raise_error(ArgumentError) }
-      specify { expect(Angle.new('10.5 E', latlong: :longitude)).to eq(10.5.degrees) }
-      specify { expect(Angle.new('10.5 W', latlong: :longitude)).to eq(-10.5.degrees) }
-      specify { expect { Angle.new('10 N', latlong: :longitude) }.to raise_error(ArgumentError) }
-      specify { expect { Angle.new('10 S', latlong: :longitude) }.to raise_error(ArgumentError) }
       specify { expect(Angle.new('50°')).to eq(50.0.degrees) }
       specify { expect(Angle.new('10.5 °')).to eq(10.5.degrees) }
       specify { expect(Angle.new("50° 0'")).to eq(50.0.degrees) }
@@ -61,5 +52,13 @@ describe Angle do
 
     it_behaves_like 'converted angle', 180.0.degrees
     it_behaves_like 'converted angle', Math::PI.radians
+  end
+
+  describe '#longitude' do
+    specify { expect(50.degrees.longitude).to eq Longitude.new(50) }
+  end
+
+  describe '#latitude' do
+    specify { expect(50.degrees.latitude).to eq Latitude.new(50) }
   end
 end

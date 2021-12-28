@@ -9,7 +9,7 @@ class Angle
   attr_reader :degrees, :latlong
 
   # Constructor
-  def initialize(degrees = nil, radians: nil, latlong: nil)
+  def initialize(degrees = nil, radians: nil)
     @latlong = latlong
 
     if radians
@@ -53,6 +53,23 @@ class Angle
     @radians ||= @degrees * Math::PI / 180.0
   end
 
+  def latitude
+    Latitude.new(self.degrees)
+  end
+
+  def longitude
+    Longitude.new(self.degrees)
+  end
+
+  protected
+
+  def self.valid_compass_points
+    @valid_compass_points
+  end
+
+  def self.negative_compass_point
+    @negative_compass_point
+  end
   private
 
   # rubocop: disable Lint/MixedRegexpCaptureTypes PB: the named capture groups are really useful.  The unnamed ones
@@ -65,8 +82,6 @@ class Angle
   DECIMAL = /((?<decimal>.[0-9]+)°?)/
 
   COORDINATE_REGEXP = /#{SIGN}#{DEGREES}(#{MINUTES_AND_SECONDS}|#{DECIMAL})?\s*(?<compass>[NSEW]?)/i
-  LATLONG = { latitude: { valid_directions: 'NS', negative_direction: 'S'},
-              longitude: { valid_directions: 'WE', negative_direction: 'W' } }.freeze
   # rubocop: enable Lint/MixedRegexpCaptureTypes
 
   # rubocop: disable Metrics/CyclomaticComplexity Complex maths.  Difficult to simplify in a meaningful way.
@@ -89,13 +104,13 @@ class Angle
     @degrees += match[:minutes].to_f / 60.0 if match[:minutes]
     @degrees += match[:seconds].to_f / 3600.0 if match[:seconds]
 
-    @degrees *= -1.0 if match[:sign] == '-' || match[:compass].casecmp?(LATLONG.dig(@latlong, :negative_direction))
+    @degrees *= -1.0 if match[:sign] == '-' || match[:compass].casecmp?(self.class.negative_compass_point)
   end
   # rubocop: enable Metrics/CyclomaticComplexity
   # rubocop: enable Metrics/AbcSize
 
   def check_compass(match)
-    match[:compass].present? && !match[:compass].in?(LATLONG[latlong][:valid_directions])
+    match[:compass].present? && !match[:compass].in?(self.class.valid_compass_points)
   end
 
   # Add the ability to write:
@@ -111,3 +126,6 @@ class Angle
     end
   end
 end
+
+require_relative 'latitude'
+require_relative 'longitude'
