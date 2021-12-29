@@ -10,14 +10,14 @@ module Vincenty
 
   VincentySolution = Struct.new(:initial_bearing, :final_bearing, :distance, keyword_init: true)
 
+  # Implements the Vincenty algorithm
+  #
   # rubocop: disable Metrics/MethodLength
   # rubocop: disable Metrics/AbcSize
   def iterative_solver(start, final)
     delta_lambda = (final.longitude - start.longitude).radians # difference in longitude on an auxiliary sphere
 
     lam = delta_lambda
-    lam_sin = Math.sin(lam)
-    lam_cos = Math.cos(lam)
 
     # A comment that might one day end up on Medium :-)
     #
@@ -26,6 +26,9 @@ module Vincenty
     # loop values before the start of the loop so their scope is still there after existing the loop, or insert a next
     # in the middle of the loop for the standard case, and fall through to the final calculation and a return.
     100.times do
+      lam_sin = Math.sin(lam)
+      lam_cos = Math.cos(lam)
+
       sin_sigma = Math.sqrt((final.latitude.cos * lam_sin)**2 + ((start.latitude.cos * final.latitude.sin) - (start.latitude.sin * final.latitude.cos * lam_cos))**2)
       return VincentySolution.new(distance: 0.0) if sin_sigma.zero? # co-incident points
 
@@ -33,7 +36,7 @@ module Vincenty
       sigma = Math.atan2(sin_sigma, cos_sigma)
 
       sin_alpha = start.latitude.cos * final.latitude.cos * lam_sin / sin_sigma
-      cos_sq_alpha = 1 - sin_alpha**2
+      cos_sq_alpha = 1 - sin_alpha**2.0
 
       cos_2sigma_m = cos_sq_alpha.zero? ? 0.0 : cos_sigma - 2.0 * start.latitude.sin * final.latitude.sin / cos_sq_alpha
 

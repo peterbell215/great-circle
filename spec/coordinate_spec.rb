@@ -69,38 +69,37 @@ describe Coordinate do
   describe 'Vincenty calculations' do
     include_context 'with common coordinates for testing'
 
-    shared_examples_for 'Vincenty calculations' do |method, value1, value2, value3|
-      specify { expect(coord_50_minus5.send(method, coord_58_minus3)).to be_within(0.001).of(value1) }
-      specify { expect(coord_50_minus5.send(method, coord_minus58_3)).to be_within(0.001).of(value2) }
-      specify { expect(coord_10_10.send(method, coord_50_50)).to be_within(0.001).of(value3) }
+    shared_examples_for 'Vincenty calculations' do |distance, initial_heading_to, final_heading_to|
+      specify { expect(start_position.distance_to(final_position).degrees).to be_within(0.001).of(distance) }
+      specify { expect(start_position.initial_heading_to(final_position).degrees).to be_within(0.001).of(initial_heading_to) }
+      specify { expect(start_position.final_heading_from(final_position).degrees).to be_within(0.001).of(final_heading_to) }
     end
 
-    describe '#distance_to' do
-      it 'returns 0 if both coordinates are equal' do
-        expect(coord_50_minus5.distance_to(coord_50_minus5)).to be_zero
-      end
-
-      it_behaves_like 'Vincenty calculations', :distance_to, 485.927, 6_476.511, 3_109.25
+    it_behaves_like 'Vincenty calculations', 485.927, 7.575056, 9.197103 do
+      let(:start_position) { coord_50_minus5 }
+      let(:final_position) { coord_58_minus3 }
     end
 
-    describe '#intial_bearing' do
-      it_behaves_like 'Vincenty calculations', :initial_heading_to, 7.575056, 175.531128, 31.830619
+    it_behaves_like 'Vincenty calculations', 6_476.511, 175.531128, 174.579117 do
+      let(:start_position) { coord_50_minus5 }
+      let(:final_position) { coord_minus58_3 }
     end
 
-    describe '#final_bearing_from' do
-      it_behaves_like 'Vincenty calculations', :final_heading_from, 9.197103, 174.579117, 53.758428
+    it_behaves_like 'Vincenty calculations', 3_109.25, 31.830619, 53.758428 do
+      let(:start_position) { coord_10_10 }
+      let(:final_position) { coord_50_50 }
     end
 
     describe 'caching mechanism' do
-      before { allow(Vincenty).to receive(:solution_set).and_call_original }
+      before { allow(Vincenty).to receive(:iterative_solver).and_call_original }
 
       # rubocop: disable RSpec/MultipleExpectations; want to test that call to solution_set is only made once.
       it 'only does the Vincenty calculation once' do
         expect(coord_50_minus5.distance_to(coord_58_minus3)).to be_within(0.001).of(485.927)
-        expect(coord_50_minus5.initial_heading_to(coord_58_minus3)).to be_within(0.001).of(7.575056)
-        expect(coord_50_minus5.final_heading_from(coord_58_minus3)).to be_within(0.001).of(9.197103)
+        expect(coord_50_minus5.initial_heading_to(coord_58_minus3).degrees).to be_within(0.001).of(7.575056)
+        expect(coord_50_minus5.final_heading_from(coord_58_minus3).degrees).to be_within(0.001).of(9.197103)
 
-        expect(Vincenty).to have_received(:solution_set).once
+        expect(Vincenty).to have_received(:iterative_solver).once
       end
       # rubocop: enable RSpec/MultipleExpectations
     end
