@@ -1,18 +1,23 @@
 # frozen_string_literal: true
 
+require_relative 'parse_angle'
+require_relative 'wgs84_constants'
+
 # Class to represents an angle or heading.  Internally, it stores the angle in degrees.  However, it also stores
 # the angle in radians if this has been calculated.
 class Angle
   include Comparable
-  extend Forwardable
+  include ParseAngle
+  include WGS84Constants
 
-  attr_reader :degrees, :latlong
+  attr_reader :degrees
 
   # Constructor
   def initialize(degrees = nil, radians: nil)
-    @latlong = latlong
-
-    if radians
+    if degrees.kind_of?(Angle)
+      @degrees = degrees.degrees
+      @radians = degrees.radians
+    elsif radians
       @radians = radians.to_f
       @degrees = radians * 180.0 / Math::PI
     else
@@ -28,7 +33,7 @@ class Angle
     end
   end
 
-  [:+, :-, :*, :/].each { |operator| alias_method operator, :arithmetic }
+  %i[+ - * /].each { |operator| alias_method operator, :arithmetic }
 
   def coerce(other)
     [other, self.degrees]
@@ -43,7 +48,7 @@ class Angle
   end
 
   def abs!
-    @radians = @radians % Math::PI*2 if @radians
+    @radians = @radians % Math::PI * 2.0 if @radians
     @degrees = @degrees % 360.0
     self
   end
@@ -61,57 +66,19 @@ class Angle
     Longitude.new(self.degrees)
   end
 
-  protected
-
-  def self.valid_compass_points
-    @valid_compass_points
-  end
-
-  def self.negative_compass_point
-    @negative_compass_point
-  end
-  private
-
-  # rubocop: disable Lint/MixedRegexpCaptureTypes PB: the named capture groups are really useful.  The unnamed ones
-  #                                               are used purely to structure the Regexp and not used for extracting
-  #                                               info.  Could tag them accordingly but it makes the Regexp even less
-  #                                               readable.
-  SIGN = /(?<sign>[+-]?)/
-  DEGREES = /(?<degrees>[0-9]{1,3})/
-  MINUTES_AND_SECONDS = /(°\s*((?<minutes>[0-5]?[0-9])')(\s*(?<seconds>[0-5]?[0-9])")?)/
-  DECIMAL = /((?<decimal>.[0-9]+)°?)/
-
-  COORDINATE_REGEXP = /#{SIGN}#{DEGREES}(#{MINUTES_AND_SECONDS}|#{DECIMAL})?\s*(?<compass>[NSEW]?)/i
-  # rubocop: enable Lint/MixedRegexpCaptureTypes
-
-  # rubocop: disable Metrics/CyclomaticComplexity Complex maths.  Difficult to simplify in a meaningful way.
-  # rubocop: disable Metrics/AbcSize
-  def convert_degree_input_to_decimal(input)
-    return if input.blank?
-
-    if input.kind_of?(Numeric)
-      @degrees = input.to_f
-      return
+  def calculate_trig_trio
+    unless @trig
+      tan = (1 - WGS84_F) * Math.tan(self.radians)
+      cos = 1 / Math.sqrt(1 + tan**2)
+      sin = tan * cos
+      @trig = { tan: tan, sin: sin, cos: cos }
     end
-
-    match = COORDINATE_REGEXP.match(input)
-
-    raise ArgumentError if match.nil? || check_compass(match)
-
-    @degrees = match[:degrees].to_f
-
-    @degrees += match[:decimal].to_f if match[:decimal]
-    @degrees += match[:minutes].to_f / 60.0 if match[:minutes]
-    @degrees += match[:seconds].to_f / 3600.0 if match[:seconds]
-
-    @degrees *= -1.0 if match[:sign] == '-' || match[:compass].casecmp?(self.class.negative_compass_point)
+    @trig[__callee__]
   end
-  # rubocop: enable Metrics/CyclomaticComplexity
-  # rubocop: enable Metrics/AbcSize
 
-  def check_compass(match)
-    match[:compass].present? && !match[:compass].in?(self.class.valid_compass_points)
-  end
+  alias cos calculate_trig_trio
+  alias sin calculate_trig_trio
+  alias tan calculate_trig_trio
 
   # Add the ability to write:
   # * 50.degrees to create an Angle object of 50 degrees

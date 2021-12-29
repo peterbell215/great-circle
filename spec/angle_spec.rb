@@ -61,4 +61,10 @@ describe Angle do
   describe '#latitude' do
     specify { expect(50.degrees.latitude).to eq Latitude.new(50) }
   end
+
+  describe 'trigometric calcs' do
+    specify { expect(0.degrees.sin).to eq 0.0 }
+    specify { expect(0.degrees.cos).to eq 1.0 }
+    specify { expect(0.degrees.tan).to eq 0.0 }
+  end
 end
