@@ -12,6 +12,18 @@ module ParseAngle
 
   private
 
+  # Sets the objects @degree instance to the passed input which can be of type Angle (and derived), Numeric or
+  # a string.
+  def convert_degree_input_to_decimal(input)
+    return if input.blank?
+
+    case input
+    when Numeric then @degrees = input.to_f
+    when String then convert_string_to_decimal(input)
+    else raise ArgumentError
+    end
+  end
+
   # rubocop: disable Lint/MixedRegexpCaptureTypes PB: the named capture groups are really useful.  The unnamed ones
   #                                               are used purely to structure the Regexp and not used for extracting
   #                                               info.  Could tag them accordingly but it makes the Regexp even less
@@ -24,22 +36,15 @@ module ParseAngle
   COORDINATE_REGEXP = /#{SIGN}#{DEGREES}(#{MINUTES_AND_SECONDS}|#{DECIMAL})?\s*(?<compass>[NSEW]?)/i
   # rubocop: enable Lint/MixedRegexpCaptureTypes
 
-
-  def convert_degree_input_to_decimal(input)
-    return if input.blank?
-
-    case input
-    when Numeric then @degrees = input.to_f
-    when String then convert_string_to_decimal(input)
-    else raise ArgumentError
-    end
-  end
-
+  # Parses the passed string and converts to a degree and decimal.  Valid formats include:
+  # * '340.5'
+  # * '-340 5' 15" N'
+  # * '20.6°'
   # rubocop: disable Metrics/AbcSize
-  def convert_string_to_decimal(input)
-    match = COORDINATE_REGEXP.match(input)
+  def convert_string_to_decimal(string)
+    match = COORDINATE_REGEXP.match(string)
 
-    raise ArgumentError if check_compass(match)
+    raise ArgumentError if _check_compass(match)
 
     @degrees = match[:degrees].to_f
 
@@ -51,7 +56,9 @@ module ParseAngle
   end
   # rubocop: enable Metrics/AbcSize
 
-  def check_compass(match)
+  # Checks for Longitude and Latitude classes that the passed string has the correct compass point (i.e. N for
+  # latitudes or W for longitudes)
+  def _check_compass(match)
     match[:compass].present? && !match[:compass].in?(self.class.valid_compass_points)
   end
 end

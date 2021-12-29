@@ -1,0 +1,5 @@
+# Class to represents an angle or heading.  Internally, it stores the angle in degrees.  However, it also stores
+# the angle in radians if this has been calculated.
+class Latitude < Angle
+  def initialize: (?(Angle|Numeric|String) degrees, ?radians: Numeric radians) -> void
+end

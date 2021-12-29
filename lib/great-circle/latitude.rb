@@ -6,6 +6,7 @@ class Latitude < Angle
   @valid_compass_points = 'NS'
   @negative_compass_point = 'S'
 
+  # Constructor.  Passed either a number or an existing Angle.  Alternatively, passed radians as a named parameter.
   def initialize(degrees = nil, radians: nil)
     super
   end

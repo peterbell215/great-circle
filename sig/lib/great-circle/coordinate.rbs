@@ -1,0 +1,38 @@
+# Class to represents a location on the earth using latitude and longitude.
+class Coordinate
+  include Math
+
+  attr_reader latitude: Latitude
+
+  attr_reader longitude: Longitude
+
+  def initialize: (latitude: (Angle|Numeric|String) latitude, longitude: (Angle|Numeric|String) longitude) -> void
+
+  def latitude=: (untyped val) -> untyped
+
+  def longitude=: (untyped val) -> untyped
+
+  def distance_to: (Coordinate final_coordinate) -> Float
+
+  def initial_heading_to: (Coordinate final_coordinate) -> Angle
+
+  def final_heading_from: (Coordinate start_coordinate) -> Angle
+
+  # Given a heading and bearing from the current position, returns a new position on a great circle based on
+  # the initial heading.
+  # rubocop: disable Metrics/AbcSize PB: no easy way to simplify this method given complex maths involved
+  def new_position: (heading: Angle heading, distance: Numeric distance) -> Coordinate
+
+  # Comparison operator for Coordinate
+  def eql?: (Coordinate other) -> bool
+
+  alias == eql?
+
+  private
+
+  def new_latitude: (Angle delta, Angle heading) -> Latitude
+
+  def new_longitude: (Angle delta, Angle heading, Latitude new_latitude) -> Longitude
+
+  def find_or_calc_vincenty_solution: (Coordinate final_coordinate) -> Vincenty
+end

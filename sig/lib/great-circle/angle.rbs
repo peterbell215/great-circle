@@ -1,0 +1,53 @@
+# Class to represents an angle or heading.  Internally, it stores the angle in degrees.  However, it also stores
+# the angle in radians if this has been calculated.
+class Angle
+  include Comparable
+
+  include ParseAngle
+
+  include WGS84Constants
+
+  attr_reader degrees: Float
+
+  # Constructor
+  def initialize: (?(Angle|Numeric|String) degrees, ?radians: Numeric? radians) -> void
+
+  def +: (Angle other) -> Angle
+  def -: (Angle other) -> Angle
+  def *: (Angle other) -> Angle
+  def /: (Angle other) -> Angle
+
+  def arithmetic: (Angle other) -> Angle
+
+  def coerce: (untyped other) -> ::Array[untyped]
+
+  def <=>: (Angle other) -> Integer
+
+  def abs: () -> Angle
+
+  def abs!: () -> Angle
+
+  # Convert to radians
+  def radians: () -> Float
+
+  def latitude: () -> Latitude
+
+  def longitude: () -> Longitude
+
+  def calculate_trig_trio: () -> void
+
+  alias cos calculate_trig_trio
+
+  alias sin calculate_trig_trio
+
+  alias tan calculate_trig_trio
+
+  # Add the ability to write:
+  # * 50.degrees to create an Angle object of 50 degrees
+  # * Math::PI.radians to create an Angle object of 180 degrees
+  class ::Numeric
+    def degrees: () -> Angle
+
+    def radians: () -> Angle
+  end
+end

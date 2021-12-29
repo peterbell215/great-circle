@@ -12,9 +12,9 @@ class Angle
 
   attr_reader :degrees
 
-  # Constructor
+  # Constructor.  Passed either a number or an existing Angle.  Alternatively, passed radians as a named parameter.
   def initialize(degrees = nil, radians: nil)
-    if degrees.kind_of?(Angle)
+    if degrees.is_a?(Angle)
       @degrees = degrees.degrees
       @radians = degrees.radians
     elsif radians

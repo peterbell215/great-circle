@@ -1,0 +1,18 @@
+# Implements great circle calculations.  Thanks to http://www.movable-type.co.uk/scripts/latlong-vincenty.html
+module Vincenty
+  extend ::Vincenty
+
+  include WGS84Constants
+
+  class VincentySolution
+  end
+
+  # Implements the Vincenty algorithm
+  #
+  # rubocop: disable Metrics/MethodLength
+  # rubocop: disable Metrics/AbcSize
+  def iterative_solver: (Coordinate start, Coordinate final) -> VincentySolution
+end
+
+class FailedToConvergeError < StandardError
+end
