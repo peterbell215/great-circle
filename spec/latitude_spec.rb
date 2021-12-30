@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Latitude do
+RSpec.describe Latitude do
   describe '::initialize' do
     context 'when initialised in degrees' do
       subject(:latitude) { Latitude.new(180) }

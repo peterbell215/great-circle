@@ -14,6 +14,7 @@ RSpec::Matchers.define :be_very_close_to do |expected|
   end
 end
 
+RSpec.describe Coordinate do
   let(:coordinate) { Coordinate.new(latitude: 0, longitude: 0) }
 
   # rubocop: disable RSpec/MultipleMemoizedHelpers

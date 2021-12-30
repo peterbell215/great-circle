@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Angle do
+RSpec.describe Angle do
   describe '::initialize' do
     context 'when initialised in degrees' do
       subject(:angle) { Angle.new(180) }
