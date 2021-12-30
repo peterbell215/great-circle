@@ -15,6 +15,7 @@ describe Latitude do
       specify { expect(Latitude.new('10.5 N')).to eq(10.5.degrees) }
       specify { expect(Latitude.new('10.5 S')).to eq(-10.5.degrees) }
       specify { expect(Latitude.new('  10.5   N  ')).to eq(10.5.degrees) }
+      specify { expect(Latitude.new('10°30\'0" S')).to eq(-10.5.degrees) }
       specify { expect { Latitude.new('10 E') }.to raise_error(ArgumentError) }
       specify { expect { Latitude.new('10 W') }.to raise_error(ArgumentError) }
     end

@@ -15,6 +15,10 @@ class Coordinate
     @vincenty_solutions = {}
   end
 
+  def to_s
+    "#{latitude}, #{longitude}"
+  end
+
   def latitude=(val)
     @latitude = val.is_a?(Latitude) ? val : Latitude.new(val)
   end
@@ -37,16 +41,21 @@ class Coordinate
 
   # Given a heading and bearing from the current position, returns a new position on a great circle based on
   # the initial heading.
-  # rubocop: disable Metrics/AbcSize PB: no easy way to simplify this method given complex maths involved
-  def new_position(heading:, distance:)
+  def new_position!(heading:, distance:)
     delta = Angle.new(radians: distance.to_f / Vincenty::WGS84_A)
 
     _new_latitude = new_latitude(delta, heading)
     _new_longitude = new_longitude(delta, heading, _new_latitude)
 
-    Coordinate.new(latitude: _new_latitude, longitude: _new_longitude)
+    @latitude = _new_latitude
+    @longitude = _new_longitude
+    self
   end
-  # rubocop: enable Metrics/AbcSize
+
+  def new_position(heading:, distance:)
+    copy_of_self = Coordinate.new(latitude: @latitude, longitude: @longitude)
+    copy_of_self.new_position!(heading: heading, distance: distance)
+  end
 
   # Comparison operator for Coordinate
   def eql?(other)
@@ -63,11 +72,10 @@ class Coordinate
 
   def new_longitude(delta, heading, new_latitude)
     new_longitude_in_radians =
-      self.longitude.radians + atan2(heading.sin * delta.sin * self.latitude.cos, delta.cos - self.latitude.sin * new_latitude.sin)
-    new_longitude = Longitude.new(radians: new_longitude_in_radians)
+      self.longitude.radians +
+        atan2(heading.sin * delta.sin * self.latitude.cos, delta.cos - self.latitude.sin * new_latitude.sin)
+    Longitude.new(radians: new_longitude_in_radians)
   end
-
-
 
   def find_or_calc_vincenty_solution(final_coordinate)
     @vincenty_solutions[final_coordinate] ||= Vincenty.iterative_solver(self, final_coordinate)

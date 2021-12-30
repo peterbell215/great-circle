@@ -2,7 +2,18 @@
 
 require 'spec_helper'
 
-describe Coordinate do
+require 'rspec/expectations'
+
+RSpec::Matchers.define :be_very_close_to do |expected|
+  match do |actual|
+    (expected.longitude.degrees - actual.longitude.degrees).abs < 1.0e-3 &&
+      (expected.latitude.degrees - actual.latitude.degrees).abs < 1.0e-3
+  end
+  failure_message do |actual|
+    "expected that #{actual} is close to #{expected}"
+  end
+end
+
   let(:coordinate) { Coordinate.new(latitude: 0, longitude: 0) }
 
   # rubocop: disable RSpec/MultipleMemoizedHelpers
@@ -40,29 +51,42 @@ describe Coordinate do
   describe '#new_position' do
     include_context 'with common coordinates for testing'
 
-    shared_examples_for 'calculation based on heading and distance' do
-      subject(:new_position) { start_position.new_position(distance: distance, heading: heading) }
+    describe 'new positions from origin' do
+      let(:origin) { Coordinate.new(latitude: 0, longitude: 0) }
+      let(:one_nm_n_or_origin) { Coordinate.new(latitude: '0°1\'0" N', longitude: 0) }
+      let(:one_nm_s_or_origin) { Coordinate.new(latitude: '0°1\'0" S', longitude: 0) }
+      let(:one_nm_e_or_origin) { Coordinate.new(latitude: 0, longitude: '0°1\'0" E') }
 
-      let(:distance) { start_position.distance_to(end_position) }
-      let(:heading) { start_position.initial_heading_to(end_position) }
-
-      specify { expect(new_position.latitude.radians).to be_within(0.3).of(end_position.latitude.radians) }
-      specify { expect(new_position.longitude.radians).to be_within(0.3).of(end_position.longitude.radians) }
+      specify do
+        expect(origin.new_position(heading: 180.0.degrees, distance: 1.0)).to be_very_close_to one_nm_s_or_origin
+      end
     end
 
-    it_behaves_like 'calculation based on heading and distance' do
-      let(:start_position) { coord_50_minus5 }
-      let(:end_position) { coord_58_minus3 }
-    end
+    describe 'from two points on the globe' do
+      shared_examples_for 'calculation based on heading and distance' do
+        subject(:new_position) { start_position.new_position(distance: distance, heading: heading) }
 
-    it_behaves_like 'calculation based on heading and distance' do
-      let(:start_position) { coord_50_minus5 }
-      let(:end_position) { coord_58_minus3 }
-    end
+        let(:distance) { start_position.distance_to(end_position) }
+        let(:heading) { start_position.initial_heading_to(end_position) }
 
-    it_behaves_like 'calculation based on heading and distance' do
-      let(:start_position) { coord_58_minus3 }
-      let(:end_position) { coord_50_minus5 }
+        specify { expect(new_position.latitude.radians).to be_within(0.3).of(end_position.latitude.radians) }
+        specify { expect(new_position.longitude.radians).to be_within(0.3).of(end_position.longitude.radians) }
+      end
+
+      it_behaves_like 'calculation based on heading and distance' do
+        let(:start_position) { coord_50_minus5 }
+        let(:end_position) { coord_58_minus3 }
+      end
+
+      it_behaves_like 'calculation based on heading and distance' do
+        let(:start_position) { coord_50_minus5 }
+        let(:end_position) { coord_58_minus3 }
+      end
+
+      it_behaves_like 'calculation based on heading and distance' do
+        let(:start_position) { coord_58_minus3 }
+        let(:end_position) { coord_50_minus5 }
+      end
     end
   end
 

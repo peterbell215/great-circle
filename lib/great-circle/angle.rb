@@ -47,6 +47,10 @@ class Angle
     Angle.new(self.degrees).abs!
   end
 
+  def to_s
+    self.degrees.to_s
+  end
+
   def abs!
     @radians = @radians % Math::PI * 2.0 if @radians
     @degrees = @degrees % 360.0
@@ -66,19 +70,11 @@ class Angle
     Longitude.new(self.degrees)
   end
 
-  def calculate_trig_trio
-    unless @trig
-      tan = (1 - WGS84_F) * Math.tan(self.radians)
-      cos = 1 / Math.sqrt(1 + tan**2)
-      sin = tan * cos
-      @trig = { tan: tan, sin: sin, cos: cos }
+  %w[cos sin tan].each do |method|
+    define_method(method) do
+      instance_variable_get("@#{method}") || instance_variable_set("@#{method}", Math.send(method, self.radians))
     end
-    @trig[__callee__]
   end
-
-  alias cos calculate_trig_trio
-  alias sin calculate_trig_trio
-  alias tan calculate_trig_trio
 
   # Add the ability to write:
   # * 50.degrees to create an Angle object of 50 degrees

@@ -15,6 +15,7 @@ describe Longitude do
       specify { expect(Longitude.new('10.5 E')).to eq(10.5.degrees) }
       specify { expect(Longitude.new('10.5 W')).to eq(-10.5.degrees) }
       specify { expect(Longitude.new('  10.5   E  ')).to eq(10.5.degrees) }
+      specify { expect(Longitude.new('10°30\'0" W')).to eq(-10.5.degrees) }
       specify { expect { Longitude.new('10 N') }.to raise_error(ArgumentError) }
       specify { expect { Longitude.new('10 S') }.to raise_error(ArgumentError) }
     end

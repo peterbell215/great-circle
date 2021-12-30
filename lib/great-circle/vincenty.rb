@@ -17,6 +17,9 @@ module Vincenty
   def iterative_solver(start, final)
     delta_lambda = (final.longitude - start.longitude).radians # difference in longitude on an auxiliary sphere
 
+    sin_u1, cos_u1 = calculate_trig_trio(start.latitude.radians)
+    sin_u2, cos_u2 = calculate_trig_trio(final.latitude.radians)
+
     lam = delta_lambda
 
     # A comment that might one day end up on Medium :-)
@@ -29,16 +32,16 @@ module Vincenty
       lam_sin = Math.sin(lam)
       lam_cos = Math.cos(lam)
 
-      sin_sigma = Math.sqrt((final.latitude.cos * lam_sin)**2 + ((start.latitude.cos * final.latitude.sin) - (start.latitude.sin * final.latitude.cos * lam_cos))**2)
+      sin_sigma = Math.sqrt((cos_u2 * lam_sin)**2 + ((cos_u1 * sin_u2) - (sin_u1 * cos_u2 * lam_cos))**2)
       return VincentySolution.new(distance: 0.0) if sin_sigma.zero? # co-incident points
 
-      cos_sigma = (start.latitude.sin * final.latitude.sin) + (start.latitude.cos * final.latitude.cos * lam_cos)
+      cos_sigma = (sin_u1 * sin_u2) + (cos_u1 * cos_u2 * lam_cos)
       sigma = Math.atan2(sin_sigma, cos_sigma)
 
-      sin_alpha = start.latitude.cos * final.latitude.cos * lam_sin / sin_sigma
+      sin_alpha = cos_u1 * cos_u2 * lam_sin / sin_sigma
       cos_sq_alpha = 1 - sin_alpha**2.0
 
-      cos_2sigma_m = cos_sq_alpha.zero? ? 0.0 : cos_sigma - 2.0 * start.latitude.sin * final.latitude.sin / cos_sq_alpha
+      cos_2sigma_m = cos_sq_alpha.zero? ? 0.0 : cos_sigma - 2.0 * sin_u1 * sin_u2 / cos_sq_alpha
 
       c = WGS84_F / 16.0 * cos_sq_alpha * (4.0 + WGS84_F * (4.0 - 3.0 * cos_sq_alpha))
       lam_prime = lam
@@ -56,16 +59,25 @@ module Vincenty
         big_b / 6.0 * cos_2sigma_m * (-3.0 + 4.0 * (sin_sigma**2)) * (-3.0 + 4.0 * (cos_sigma**2))))
 
       distance = (WGS84_B * big_a * (sigma - delta_sigma))
-      fwd_az = Math.atan2(final.latitude.cos * lam_sin, (start.latitude.cos * final.latitude.sin) - (start.latitude.sin * final.latitude.cos * lam_cos))
-      rev_az = Math.atan2(start.latitude.cos * lam_sin, (start.latitude.cos * final.latitude.sin * lam_cos) - (start.latitude.sin * final.latitude.cos))
+      fwd_az = Math.atan2(cos_u2 * lam_sin, (cos_u1 * sin_u2) - (sin_u1 * cos_u2 * lam_cos))
+      rev_az = Math.atan2(cos_u1 * lam_sin, (cos_u1 * sin_u2 * lam_cos) - (sin_u1 * cos_u2))
 
-      return VincentySolution.new(distance: distance, initial_bearing: Angle.new(radians: fwd_az), final_bearing: Angle.new(radians: rev_az))
+      return VincentySolution.new(distance: distance,
+                                  initial_bearing: Angle.new(radians: fwd_az),
+                                  final_bearing: Angle.new(radians: rev_az))
     end
 
     raise FailedToConvergeError
   end
   # rubocop: enable Metrics/MethodLength
   # rubocop: enable Metrics/AbcSize
+
+  def calculate_trig_trio(radians)
+    tan = (1 - WGS84_F) * Math.tan(radians)
+    cos = 1 / Math.sqrt(1 + tan**2)
+    sin = tan * cos
+    [sin, cos, tan]
+  end
 end
 
 class FailedToConvergeError < StandardError; end
