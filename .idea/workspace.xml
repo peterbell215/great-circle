@@ -6,14 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="118ac8e6-1cb6-4110-a7cf-ddcfc7481ed0" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/great-circle/angle.rb" beforeDir="false" afterPath="$PROJECT_DIR$/lib/great-circle/angle.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/great-circle/coordinate.rb" beforeDir="false" afterPath="$PROJECT_DIR$/lib/great-circle/coordinate.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/great-circle/vincenty.rb" beforeDir="false" afterPath="$PROJECT_DIR$/lib/great-circle/vincenty.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spec/angle_spec.rb" beforeDir="false" afterPath="$PROJECT_DIR$/spec/angle_spec.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spec/coordinate_spec.rb" beforeDir="false" afterPath="$PROJECT_DIR$/spec/coordinate_spec.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spec/latitude_spec.rb" beforeDir="false" afterPath="$PROJECT_DIR$/spec/latitude_spec.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spec/longitude_spec.rb" beforeDir="false" afterPath="$PROJECT_DIR$/spec/longitude_spec.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/spec/spec_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/spec/spec_helper.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +55,7 @@
       <envs>
         <env name="JRUBY_OPTS" value="-X+O" />
       </envs>
-      <EXTENSION ID="BundlerRunConfigurationExtension" BUNDLE_MODE="AUTO" bundleExecEnabled="false" />
+      <EXTENSION ID="BundlerRunConfigurationExtension" BUNDLE_MODE="AUTO" bundleExecEnabled="true" />
       <EXTENSION ID="JRubyRunConfigurationExtension" NailgunExecEnabled="false" />
       <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov" ENABLE_BRANCH_COVERAGE="true" ENABLE_FORKED_COVERAGE="true">
         <COVERAGE_PATTERN ENABLED="true">
@@ -234,7 +226,7 @@
       <envs>
         <env name="JRUBY_OPTS" value="-X+O" />
       </envs>
-      <EXTENSION ID="BundlerRunConfigurationExtension" BUNDLE_MODE="AUTO" bundleExecEnabled="false" />
+      <EXTENSION ID="BundlerRunConfigurationExtension" BUNDLE_MODE="AUTO" bundleExecEnabled="true" />
       <EXTENSION ID="JRubyRunConfigurationExtension" NailgunExecEnabled="false" />
       <EXTENSION ID="RubyCoverageRunConfigurationExtension" track_test_folders="true" runner="rcov" ENABLE_BRANCH_COVERAGE="true" ENABLE_FORKED_COVERAGE="true">
         <COVERAGE_PATTERN ENABLED="true">
@@ -288,7 +280,8 @@
       <workItem from="1640755196254" duration="16869000" />
       <workItem from="1640786053205" duration="807000" />
       <workItem from="1640787164190" duration="24000" />
-      <workItem from="1640843331123" duration="10254000" />
+      <workItem from="1640843331123" duration="11443000" />
+      <workItem from="1640927860733" duration="10000" />
     </task>
     <servers />
   </component>
