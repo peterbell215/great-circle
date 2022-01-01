@@ -43,7 +43,12 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
   </component>
-  <component name="RunManager" selected="RSpec.All specs in spec: great-circle">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/lib" />
+    </key>
+  </component>
+  <component name="RunManager" selected="RSpec.coordinate_spec">
     <configuration name="All specs in spec: great-circle" type="RSpecRunConfigurationType" factoryName="RSpec" temporary="true">
       <module name="great-circle" />
       <predefined_log_file enabled="true" id="RUBY_RSPEC" />
@@ -259,9 +264,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="RSpec.coordinate_spec" />
         <item itemvalue="RSpec.All specs in spec: great-circle" />
         <item itemvalue="RSpec.latitude_spec" />
-        <item itemvalue="RSpec.coordinate_spec" />
         <item itemvalue="RSpec.Angle" />
         <item itemvalue="RSpec.angle_spec" />
       </list>
@@ -282,6 +287,11 @@
       <workItem from="1640787164190" duration="24000" />
       <workItem from="1640843331123" duration="11443000" />
       <workItem from="1640927860733" duration="10000" />
+      <workItem from="1640929895347" duration="3777000" />
+      <workItem from="1640961530985" duration="94000" />
+      <workItem from="1640972329380" duration="1448000" />
+      <workItem from="1641016043532" duration="624000" />
+      <workItem from="1641053161343" duration="14000" />
     </task>
     <servers />
   </component>
@@ -352,7 +362,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="ruby-line">
           <url>file://$PROJECT_DIR$/spec/coordinate_spec.rb</url>
-          <line>61</line>
+          <line>50</line>
           <properties myBlockOrdinal="-1">
             <option name="block-ordinal" value="-1" />
           </properties>
@@ -371,7 +381,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/great_circle@Coordinate.rcov" NAME="Coordinate Coverage Results" MODIFIED="1640764593769" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
-    <SUITE FILE_PATH="coverage/great_circle@coordinate_spec.rcov" NAME="coordinate_spec Coverage Results" MODIFIED="1640851156873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
+    <SUITE FILE_PATH="coverage/great_circle@coordinate_spec.rcov" NAME="coordinate_spec Coverage Results" MODIFIED="1640934085478" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
     <SUITE FILE_PATH="coverage/great_circle@longitude_spec.rcov" NAME="longitude_spec Coverage Results" MODIFIED="1640691788325" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
     <SUITE FILE_PATH="coverage/great_circle@Angle.rcov" NAME="Angle Coverage Results" MODIFIED="1640850744187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
     <SUITE FILE_PATH="coverage/great_circle@Coordinate_Vincenty_calculations.rcov" NAME="Coordinate Vincenty calculations Coverage Results" MODIFIED="1640849221505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />

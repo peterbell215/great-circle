@@ -31,6 +31,42 @@ RSpec.describe Angle do
     end
   end
 
+  describe '#minutes' do
+    specify { expect(Angle.new(50).minutes).to eq 0 }
+    specify { expect(Angle.new("50° 0' 36\"").minutes).to eq 0 }
+    specify { expect(Angle.new("50° 20' 36\"").minutes).to eq 20 }
+    specify { expect(Angle.new(-50.01).minutes).to eq 0 }
+  end
+
+  describe '#seconds' do
+    specify { expect(Angle.new(50).seconds).to eq 0 }
+    specify { expect(Angle.new("50° 0' 36\"").seconds).to eq 36 }
+    specify { expect(Angle.new("50° 20' 36\"").seconds).to eq 36 }
+    specify { expect(Angle.new(-50.01).seconds).to eq 36 }
+  end
+
+  describe '#format' do
+    context 'when the angle is positive' do
+      subject(:positive_angle) { Angle.new("50° 30' 20\"") }
+
+      specify { expect(positive_angle.format).to eq '50.505556' }
+      specify { expect(positive_angle.format(decimals: 4)).to eq '50.5056' }
+      specify { expect(positive_angle.format(sexagesimal: true)).to eq '50°30\'20"' }
+      specify { expect(positive_angle.format(sexagesimal: true, sign: [nil, '-'])).to eq '50°30\'20"' }
+      specify { expect(positive_angle.format(sexagesimal: true, sign: %w[N S])).to eq '50°30\'20"N' }
+    end
+
+    context 'when the angle is negative' do
+      subject(:negative_angle) { Angle.new("-50° 30' 20\"") }
+
+      specify { expect(negative_angle.format).to eq '-50.505556' }
+      specify { expect(negative_angle.format(decimals: 4)).to eq '-50.5056' }
+      specify { expect(negative_angle.format(sexagesimal: true)).to eq '-50°30\'20"' }
+      specify { expect(negative_angle.format(sexagesimal: true, sign: [nil, '-'])).to eq '-50°30\'20"' }
+      specify { expect(negative_angle.format(sexagesimal: true, sign: %w[N S])).to eq '50°30\'20"S' }
+    end
+  end
+
   describe '#+' do
     specify { expect(55.degrees + 5.degrees).to eq 60.degrees }
     specify { expect(55.degrees + 5).to eq 60.degrees }

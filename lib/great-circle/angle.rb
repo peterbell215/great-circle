@@ -25,6 +25,45 @@ class Angle
     end
   end
 
+  def to_s
+    self.degrees.format
+  end
+
+  # Provides a method to format the angle in a variety of different formats, based on the passed parameters.  Options
+  # are:
+  # * 50.505556.degrees.format produces '50.505556'; default is six decimal places
+  # * 50.505556.degrees.format(decimals: 4) produces '50.5056'
+  # * 50.505556.degrees.format(sexagesimal: true) produces 50°30'20"
+  #
+  # The `sign` parameter is passed a two element array.  The first element specifies how a positive angle should be
+  # indicated.  If nil, then no sign is provided.  If a `+` is provided, then a + sign precedes the angle.  If a
+  # string is passed this is appended to the degree.  Examples:
+  # * 50.505556.degrees.format(sexagesimal: true, sign: [nil, '-']) produces 50°30'20"
+  # * 50.505556.degrees.format(sexagesimal: true, sign: %w[N S]) produces 50°30'20"N
+  #
+  # If the angle is negative, then the sign parameter is interpreted as follows: a nil, or `-` sign causes a `-` to
+  # precede the angle.  Otherwise, the passed string is appended.  Examples:
+  # * -50.505556.degrees.format produces -50.505556
+  # * -50.505556.degrees.format(sexagesimal: true, sign: [nil, '-']) produces -50°30'20"
+  # * -50.505556.degrees.format(sexagesimal: true, sign: %w[N S])) produces 50°30\'20"S
+  def format(decimals: 6, sexagesimal: false, sign: [nil, '-'])
+    string = format_angle(decimals, sexagesimal)
+
+    add_sign(string, sign)
+  end
+
+  def <=>(other)
+    self.degrees <=> other.degrees
+  end
+
+  def minutes
+    (degrees.abs * 60).floor % 60
+  end
+
+  def seconds
+    (degrees.abs * 3600).floor % 60
+  end
+
   def arithmetic(other)
     case other
     when Angle then Angle.new(@degrees.send(__callee__, other.degrees))
@@ -39,16 +78,8 @@ class Angle
     [other, self.degrees]
   end
 
-  def <=>(other)
-    self.degrees <=> other.degrees
-  end
-
   def abs
     Angle.new(self.degrees).abs!
-  end
-
-  def to_s
-    self.degrees.to_s
   end
 
   def abs!
@@ -86,6 +117,26 @@ class Angle
 
     def radians
       Angle.new(radians: self)
+    end
+  end
+
+  private
+
+  def format_angle(decimals, sexagesimal)
+    if sexagesimal
+      '%d°%d\'%d"' % [@degrees.abs.floor.to_i, minutes, seconds]
+    else
+      "%0.#{decimals}f" % @degrees.abs
+    end
+  end
+
+  def add_sign(string, sign)
+    case [@degrees.positive?, sign[0], sign[1]]
+    in true, nil, _ then string
+    in true, '+', _ then "+#{string}"
+    in true, String => sign, _ then "#{string}#{sign}"
+    in false, _, nil | '-' then "-#{string}"
+    in false, _, sign then "#{string}#{sign}"
     end
   end
 end
