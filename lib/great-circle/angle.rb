@@ -26,7 +26,7 @@ class Angle
   end
 
   def to_s
-    self.degrees.format
+    self.format
   end
 
   # Provides a method to format the angle in a variety of different formats, based on the passed parameters.  Options
