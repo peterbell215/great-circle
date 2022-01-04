@@ -78,6 +78,9 @@ class Coordinate
   end
 
   def find_or_calc_vincenty_solution(final_coordinate)
+    unless final_coordinate.is_a?(Coordinate)
+      final_coordinate = Coordinate.new(latitude: final_coordinate.latitude, longitude: final_coordinate.longitude)
+    end
     @vincenty_solutions[final_coordinate] ||= Vincenty.iterative_solver(self, final_coordinate)
   end
 end
