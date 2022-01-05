@@ -67,6 +67,17 @@ RSpec.describe Angle do
     end
   end
 
+  describe '#<=>' do
+    specify { expect(55.degrees <=> 34.degrees).to eq 1 }
+    specify { expect(55.degrees <=> 55.degrees).to eq 0 }
+    specify { expect(55.degrees <=> 60.degrees).to eq -1 }
+  end
+
+  describe '#==' do
+    specify { expect(55.degrees == 55.degrees).to be_truthy }
+    specify { expect(55.degrees == :symbol).to be_falsey }
+  end
+
   describe '#+' do
     specify { expect(55.degrees + 5.degrees).to eq 60.degrees }
     specify { expect(55.degrees + 5).to eq 60.degrees }
