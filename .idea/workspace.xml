@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="118ac8e6-1cb6-4110-a7cf-ddcfc7481ed0" name="Changes" comment="" />
+    <list default="true" id="118ac8e6-1cb6-4110-a7cf-ddcfc7481ed0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -268,8 +270,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="RSpec.angle_spec" />
         <item itemvalue="RSpec.All specs in spec: great-circle" />
+        <item itemvalue="RSpec.angle_spec" />
         <item itemvalue="Ruby Console.IRB: great-circle" />
         <item itemvalue="RSpec.Angle" />
         <item itemvalue="RSpec.Angle#minutes" />
@@ -300,6 +302,8 @@
       <workItem from="1641103103438" duration="664000" />
       <workItem from="1641281415195" duration="16000" />
       <workItem from="1641324583210" duration="1721000" />
+      <workItem from="1641361760355" duration="1570000" />
+      <workItem from="1641412719854" duration="434000" />
     </task>
     <servers />
   </component>
@@ -345,24 +349,8 @@
           <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="ruby-line">
-          <url>file://$PROJECT_DIR$/lib/great-circle/coordinate.rb</url>
-          <line>44</line>
-          <properties myBlockOrdinal="-1">
-            <option name="block-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="ruby-line">
-          <url>file://$PROJECT_DIR$/lib/great-circle/coordinate.rb</url>
-          <line>68</line>
-          <properties myBlockOrdinal="-1">
-            <option name="block-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="ruby-line">
           <url>file://$PROJECT_DIR$/lib/great-circle/angle.rb</url>
-          <line>105</line>
+          <line>109</line>
           <properties myBlockOrdinal="-1">
             <option name="block-ordinal" value="-1" />
           </properties>
@@ -378,7 +366,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="ruby-line">
           <url>file://$PROJECT_DIR$/lib/great-circle/angle.rb</url>
-          <line>133</line>
+          <line>137</line>
           <properties myBlockOrdinal="-1">
             <option name="block-ordinal" value="-1" />
           </properties>
@@ -395,8 +383,8 @@
     <SUITE FILE_PATH="coverage/great_circle@Coordinate_Vincenty_calculations.rcov" NAME="Coordinate Vincenty calculations Coverage Results" MODIFIED="1640849221505" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
     <SUITE FILE_PATH="coverage/great_circle@IRB__great_circle.rcov" NAME="IRB: great-circle Coverage Results" MODIFIED="1641058544231" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
     <SUITE FILE_PATH="coverage/great_circle@Coordinate_initialization_initializes_object_with_provided_parameters.rcov" NAME="Coordinate initialization initializes object with provided parameters Coverage Results" MODIFIED="1640696261039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
-    <SUITE FILE_PATH="coverage/great_circle@All_specs_in_spec__great_circle.rcov" NAME="All specs in spec: great-circle Coverage Results" MODIFIED="1640854335156" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
-    <SUITE FILE_PATH="coverage/great_circle@angle_spec.rcov" NAME="angle_spec Coverage Results" MODIFIED="1641062248920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
+    <SUITE FILE_PATH="coverage/great_circle@All_specs_in_spec__great_circle.rcov" NAME="All specs in spec: great-circle Coverage Results" MODIFIED="1641361780878" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
+    <SUITE FILE_PATH="coverage/great_circle@angle_spec.rcov" NAME="angle_spec Coverage Results" MODIFIED="1641364631749" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
     <SUITE FILE_PATH="coverage/great_circle@latitude_spec.rcov" NAME="latitude_spec Coverage Results" MODIFIED="1640852262638" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
     <SUITE FILE_PATH="coverage/great_circle@Coordinate_new_position.rcov" NAME="Coordinate#new_position Coverage Results" MODIFIED="1640850317662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />
     <SUITE FILE_PATH="coverage/great_circle@Angle_minutes.rcov" NAME="Angle#minutes Coverage Results" MODIFIED="1641055927852" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="great-circle" />

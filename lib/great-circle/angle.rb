@@ -53,7 +53,7 @@ class Angle
   end
 
   def ==(other)
-    other.is_a?(self.class) && (self <=> other) == 0
+    other.is_a?(Angle) && (self <=> other) == 0
   end
 
   def <=>(other)
