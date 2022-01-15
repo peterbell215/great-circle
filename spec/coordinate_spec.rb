@@ -80,11 +80,15 @@ RSpec.describe Coordinate do
     end
   end
 
-  describe 'Vincenty calculations' do
+  describe 'Vincenty and Haversine calculations' do
     include_context 'with common coordinates for testing'
 
     shared_examples_for 'Vincenty calculations' do |distance, initial_heading_to, final_heading_to|
-      specify { expect(start_position.distance_to(final_position).degrees).to be_within(0.001).of(distance) }
+      specify { expect(start_position.distance_to(final_position)).to be_within(0.001).of(distance) }
+
+      # Haversine is less accurate.  Check the error is less than 1%.
+      specify { expect(start_position.distance_to(final_position, algorithm: :haversine)).to be_within(0.01*distance).of(distance) }
+
       specify { expect(start_position.initial_heading_to(final_position).degrees).to be_within(0.001).of(initial_heading_to) }
       specify { expect(start_position.final_heading_from(final_position).degrees).to be_within(0.001).of(final_heading_to) }
     end

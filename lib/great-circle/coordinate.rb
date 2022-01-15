@@ -29,6 +29,12 @@ class Coordinate
 
   def distance_to(final_coordinate)
     find_or_calc_vincenty_solution(final_coordinate).distance
+  def distance_to(final_coordinate, algorithm: :vincenty)
+    if algorithm == :vincenty
+      find_or_calc_vincenty_solution(final_coordinate).distance
+    else
+      Haversine.distance(self, final_coordinate)
+    end
   end
 
   def initial_heading_to(final_coordinate)
