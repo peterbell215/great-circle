@@ -5,6 +5,7 @@ require 'active_support/core_ext'
 # Class to represents a location on the earth using latitude and longitude.
 class Coordinate
   include Math
+  include WGS84Constants
 
   attr_reader :latitude, :longitude
 
@@ -27,8 +28,17 @@ class Coordinate
     @longitude = val.is_a?(Longitude) ? val : Longitude.new(val)
   end
 
-  def distance_to(final_coordinate)
-    find_or_calc_vincenty_solution(final_coordinate).distance
+  # Approximates the earth to a flat surface and calculates the difference in x coordinates on that flat surface
+  # Useful for local mapping, but in-accurate over larger distances.
+  def delta_x(other)
+    (other.longitude - self.longitude).radians * cos((other.latitude + self.latitude).radians * 0.5) * MEAN_RADIUS
+  end
+
+  # @see Coordinate#delta_x
+  def delta_y(other)
+    (other.latitude - self.latitude).radians * MEAN_RADIUS
+  end
+
   def distance_to(final_coordinate, algorithm: :vincenty)
     if algorithm == :vincenty
       find_or_calc_vincenty_solution(final_coordinate).distance
@@ -50,11 +60,11 @@ class Coordinate
   def new_position!(heading:, distance:)
     delta = Angle.new(radians: distance.to_f / Vincenty::WGS84_A)
 
-    _new_latitude = new_latitude(delta, heading)
-    _new_longitude = new_longitude(delta, heading, _new_latitude)
+    new_lat = new_latitude(delta, heading)
+    new_lon = new_longitude(delta, heading, new_lat)
 
-    @latitude = _new_latitude
-    @longitude = _new_longitude
+    @latitude = new_lat
+    @longitude = new_lon
     self
   end
 

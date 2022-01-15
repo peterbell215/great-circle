@@ -38,6 +38,20 @@ RSpec.describe Coordinate do
     it { is_expected.not_to be_eql(different_longitude) }
   end
 
+  describe 'delta functions' do
+    subject(:coordinate) { Coordinate.new(latitude: 50.0, longitude: 0.0) }
+
+    shared_examples 'for delta functions' do |other, delta_x, delta_y|
+      specify { expect(coordinate.delta_x(other)).to be_within(0.05).of(delta_x) }
+      specify { expect(coordinate.delta_y(other)).to be_within(0.05).of(delta_y) }
+    end
+
+    it_behaves_like 'for delta functions', Coordinate.new(latitude: 51.0, longitude:  0.0),    0.0,  60.0 # North
+    it_behaves_like 'for delta functions', Coordinate.new(latitude: 50.0, longitude:  1.0),  38.59,   0.0 # East
+    it_behaves_like 'for delta functions', Coordinate.new(latitude: 49.0, longitude:  0.0),    0.0, -60.0 # South
+    it_behaves_like 'for delta functions', Coordinate.new(latitude: 50.0, longitude: -1.0), -38.59,   0.0 # West
+  end
+
   describe '#new_position' do
     include_context 'with common coordinates for testing'
 

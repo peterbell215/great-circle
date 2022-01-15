@@ -25,6 +25,7 @@ class Angle
     end
   end
 
+  # Uses the default settings of #format to convert self to a string.
   def to_s
     self.format
   end
@@ -53,7 +54,7 @@ class Angle
   end
 
   def ==(other)
-    other.is_a?(Angle) && (self <=> other) == 0
+    other.is_a?(Angle) && (self <=> other).zero?
   end
 
   def <=>(other)
@@ -111,6 +112,17 @@ class Angle
     end
   end
 
+  # Approximates the earth to a flat surface and calculates the difference in x coordinates on that flat surface
+  # Useful for local mapping, but in-accurate over larger distances.
+  def delta_x(other)
+    ((other.longitude - self.longitude).radians * (other.latitude + self.latitude).radians * 0.5) * MEAN_RADIUS
+  end
+
+  # @see Angle#delta_x
+  def delta_y(other)
+    (other.latitude - self.latitude).radians * MEAN_RADIUS
+  end
+  
   # Add the ability to write:
   # * 50.degrees to create an Angle object of 50 degrees
   # * Math::PI.radians to create an Angle object of 180 degrees
