@@ -39,6 +39,9 @@ class Coordinate
     (other.latitude - self.latitude).radians * MEAN_RADIUS
   end
 
+  # calculates the distance in nautical miles between `self` and the other point.  The caller can choose between
+  # the slower but more accurate Vincenty algorithm and the faster but less accurate Haversine algorithm.  By default
+  # Vincenty is used.
   def distance_to(final_coordinate, algorithm: :vincenty)
     if algorithm == :vincenty
       find_or_calc_vincenty_solution(final_coordinate).distance
@@ -47,6 +50,7 @@ class Coordinate
     end
   end
 
+  # Calculates the initial heading of the great circle between `self` and the other point.
   def initial_heading_to(final_coordinate)
     find_or_calc_vincenty_solution(final_coordinate).initial_bearing
   end

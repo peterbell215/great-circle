@@ -61,10 +61,12 @@ class Angle
     self.degrees <=> other.degrees
   end
 
+  # Returns the angle's minutes.
   def minutes
     (degrees.abs * 60).floor % 60
   end
 
+  # Returns the angle's seconds.
   def seconds
     (degrees.abs * 3600).floor % 60
   end
@@ -110,17 +112,6 @@ class Angle
     define_method(method) do
       instance_variable_get("@#{method}") || instance_variable_set("@#{method}", Math.send(method, self.radians))
     end
-  end
-
-  # Approximates the earth to a flat surface and calculates the difference in x coordinates on that flat surface
-  # Useful for local mapping, but in-accurate over larger distances.
-  def delta_x(other)
-    ((other.longitude - self.longitude).radians * (other.latitude + self.latitude).radians * 0.5) * MEAN_RADIUS
-  end
-
-  # @see Angle#delta_x
-  def delta_y(other)
-    (other.latitude - self.latitude).radians * MEAN_RADIUS
   end
   
   # Add the ability to write:

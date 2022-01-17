@@ -1,0 +1,10 @@
+module WGS84Constants
+  # in nautical miles
+  WGS84_A: ::Float
+
+  WGS84_B: ::Float
+
+  WGS84_F: untyped
+
+  MEAN_RADIUS: ::Float
+end

@@ -1,0 +1,41 @@
+# Module to include in Angle that provides functionality to parse angles including lat or longs.
+module ParseAngle
+  def self.included: (untyped klass) -> untyped
+
+  module ClassMethods
+    attr_reader valid_compass_points: untyped
+
+    attr_reader negative_compass_point: untyped
+  end
+
+  private
+
+  # Sets the objects @degree instance to the passed input which can be of type Angle (and derived), Numeric or
+  # a string.
+  def convert_degree_input_to_decimal: (untyped input) -> (nil | untyped)
+
+  # rubocop: disable Lint/MixedRegexpCaptureTypes PB: the named capture groups are really useful.  The unnamed ones
+  #                                               are used purely to structure the Regexp and not used for extracting
+  #                                               info.  Could tag them accordingly but it makes the Regexp even less
+  #                                               readable.
+  SIGN: untyped
+
+  DEGREES: untyped
+
+  MINUTES_AND_SECONDS: untyped
+
+  DECIMAL: untyped
+
+  COORDINATE_REGEXP: untyped
+
+  # Parses the passed string and converts to a degree and decimal.  Valid formats include:
+  # * '340.5'
+  # * '-340 5' 15" N'
+  # * '20.6°'
+  # rubocop: disable Metrics/AbcSize
+  def convert_string_to_decimal: (untyped string) -> untyped
+
+  # Checks for Longitude and Latitude classes that the passed string has the correct compass point (i.e. N for
+  # latitudes or W for longitudes)
+  def _check_compass: (untyped match) -> untyped
+end
