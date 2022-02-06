@@ -19,6 +19,15 @@ RSpec.describe Longitude do
       specify { expect { Longitude.new('10 N') }.to raise_error(ArgumentError) }
       specify { expect { Longitude.new('10 S') }.to raise_error(ArgumentError) }
     end
+
+    context 'when initialised with a string in SCT file format' do
+      let(:angle) { (54.0 + 1.0/60.0 + 12.3/3600.0).degrees }
+
+      specify { expect(Longitude.new('E054.1.12.300')).to eq(angle) }
+      specify { expect(Longitude.new('W054.1.12.300')).to eq(-angle) }
+      specify { expect { Longitude.new('N054.1.12.300') }.to raise_error(ArgumentError) }
+      specify { expect { Longitude.new('S054.1.12.300') }.to raise_error(ArgumentError) }
+    end
   end
 end
 
