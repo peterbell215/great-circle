@@ -113,7 +113,11 @@ class Angle
       instance_variable_get("@#{method}") || instance_variable_set("@#{method}", Math.send(method, self.radians))
     end
   end
-  
+
+  def -@
+    Angle.new(-self.degrees)
+  end
+
   # Add the ability to write:
   # * 50.degrees to create an Angle object of 50 degrees
   # * Math::PI.radians to create an Angle object of 180 degrees
